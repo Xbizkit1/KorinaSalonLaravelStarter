@@ -1,0 +1,5 @@
+@extends('layouts.app')
+@section('content')
+<section style="padding:64px 0 58px;text-align:center"><p class="page-kicker">Beauty, organized</p><h1 style="max-width:760px;margin:0 auto 17px;font-size:clamp(42px,6vw,67px)">Your salon, beautifully in sync.</h1><p class="page-subtitle" style="max-width:620px;margin:0 auto 30px">Korina Beauty Salon brings transactions, commissions, inventory, and team schedules into one calm, considered workspace.</p><a class="button button-gold" style="width:auto" href="{{ route('dashboard') }}">Open salon dashboard →</a></section>
+<div class="grid"><div class="card"><p class="page-kicker">Simple checkout</p><h3>Cash & GCash</h3><p>Record every service sale in one reliable ledger, with a safe GCash demo checkout.</p></div><div class="card"><p class="page-kicker">Thoughtful payroll</p><h3>Smart commission</h3><p>Calculate staff earnings automatically for every service sold.</p></div><div class="card"><p class="page-kicker">Always prepared</p><h3>Stock awareness</h3><p>See low products before they interrupt a beautiful service.</p></div></div>
+@endsection

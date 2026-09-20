@@ -1,0 +1,7 @@
+@extends('layouts.app')
+@section('title', 'Dashboard · Korina Salon')
+@section('content')
+<p class="page-kicker">Daily overview</p><h1>Salon dashboard</h1><p class="page-subtitle">A graceful snapshot of today’s studio activity.</p>
+<div class="grid"><div class="card"><div class="stat-label">Recorded sales</div><div class="number">₱{{ number_format($sales,2) }}</div></div><div class="card"><div class="stat-label">Low-stock items</div><div class="number">{{ $lowStock }}</div></div><div class="card"><div class="stat-label">Today’s shifts</div><div class="number">{{ $todayShifts }}</div></div></div>
+<div class="section-heading"><h2>Recent transactions</h2><p>Latest salon activity</p></div><div class="card table-card"><table><tr><th>Service</th><th>Staff</th><th>Payment</th><th>Amount</th></tr>@forelse($recentTransactions as $transaction)<tr><td>{{ $transaction->service->name }}</td><td>{{ $transaction->staff->name }}</td><td><span class="badge">{{ $transaction->payment_mode }}</span></td><td class="amount">₱{{ number_format($transaction->amount,2) }}</td></tr>@empty<tr><td colspan="4">No transactions yet.</td></tr>@endforelse</table></div>
+@endsection
