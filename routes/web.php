@@ -11,3 +11,4 @@ Route::get('/inventory', [SalonController::class, 'inventory'])->name('inventory
 Route::post('/inventory/{inventory}/restock', [SalonController::class, 'restock'])->name('inventory.restock');
 Route::post('/inventory/{inventory}/subtract', [SalonController::class, 'subtractStock'])->name('inventory.subtract');
 Route::get('/schedules', [SalonController::class, 'schedules'])->name('schedules');
+Route::post('/schedules', [SalonController::class, 'storeSchedule'])->name('schedules.store');

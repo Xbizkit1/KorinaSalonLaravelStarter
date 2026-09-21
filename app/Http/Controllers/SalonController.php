@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SalonController extends Controller
 {
@@ -17,9 +18,15 @@ class SalonController extends Controller
     {
         return view('dashboard', [
             'sales' => Transaction::sum('amount'),
+            'totalCommission' => Transaction::sum('commission'),
+            'availableStaff' => User::whereIn('role', ['staff', 'assistant'])->count(),
             'lowStock' => Inventory::whereColumn('quantity', '<=', 'reorder_level')->count(),
             'todayShifts' => Schedule::whereDate('shift_date', today())->count(),
             'recentTransactions' => Transaction::with(['service', 'staff'])->latest()->take(5)->get(),
+            'staffCommissions' => User::where('role', 'staff')
+                ->withSum('transactions', 'commission')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -36,7 +43,7 @@ class SalonController extends Controller
     {
         $data = $request->validate([
             'service_id' => ['required', 'exists:services,id'],
-            'staff_id' => ['required', 'exists:users,id'],
+            'staff_id' => ['required', Rule::exists('users', 'id')->where('role', 'staff')],
             'payment_mode' => ['required', 'in:Cash,GCash'],
             'gcash_confirmed' => ['nullable', 'boolean'],
         ]);
@@ -83,6 +90,22 @@ class SalonController extends Controller
     {
         return view('schedules.index', [
             'schedules' => Schedule::with('staff')->orderBy('shift_date')->orderBy('shift_start')->get(),
+            'staff' => User::whereIn('role', ['staff', 'assistant'])->orderBy('name')->get(),
         ]);
+    }
+
+    public function storeSchedule(Request $request)
+    {
+        $data = $request->validate([
+            'staff_id' => ['required', Rule::exists('users', 'id')->whereIn('role', ['staff', 'assistant'])],
+            'shift_date' => ['required', 'date'],
+            'shift_start' => ['required', 'date_format:H:i'],
+            'shift_end' => ['required', 'date_format:H:i', 'after:shift_start'],
+            'status' => ['required', 'in:Regular,Peak,Day Off'],
+        ]);
+
+        Schedule::create($data);
+
+        return back()->with('success', 'Shift assigned to the staff member.');
     }
 }
